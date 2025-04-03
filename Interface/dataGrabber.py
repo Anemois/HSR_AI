@@ -13,7 +13,7 @@ things to grab:
     "SkillPoints" : spaces.Discrete(7)
 '''
 
-class DataGrabber():
+class Interface():
     def __init__(self, chars = ["Feixiao", "Robin", "Adventurine", "March7"]):
         self.screen = self.screenshot()
         self.scrX, self.scrY = pg.size()
@@ -29,7 +29,7 @@ class DataGrabber():
     def initImages(self):
         self.images = {}
         cwd = os.getcwd()        
-        directory = os.fsencode(cwd + "/DataGrabber/assets")
+        directory = os.fsencode(cwd + "/Interface/assets")
     
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
@@ -163,7 +163,7 @@ class DataGrabber():
         img2 = img.copy()
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.inRange(img, (200, 74, 50), (201, 75, 51))
-        img = img[self.scrY*250//1080: self.scrY*(250+200)//1080, :]
+        img = img[self.scrY*150//1080: self.scrY*(150+400)//1080, :]
         self.showImage(img) if debug else None
 
         contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -191,8 +191,8 @@ class DataGrabber():
                 u = 100000
                 r = -1
                 d = -1
-                for cnt2 in t2:
-                    for k in cnt2:
+                for nearRect in t2:
+                    for k in nearRect:
                         x, y = k[0][0], k[0][1]
                         l = min(l, x)
                         r = max(r, x)+1
@@ -286,15 +286,15 @@ class DataGrabber():
         return actionOrder
     
 if __name__ == '__main__':
-    src = DataGrabber()
+    src = Interface()
 
     def testUltGrab(num = 1):
-        src.screenshot(path=f'{os.getcwd()}/DataGrabber/assets/ultGrabTest/{num}.png')
+        src.screenshot(path=f'{os.getcwd()}/Interface/assets/ultGrabTest/{num}.png')
         src.grabAllyUlts(debug=True)
         print(src.ults)
 
     def testGrab(num = 1):
-        src.screenshot(path=f'{os.getcwd()}/DataGrabber/assets/ultGrabTest/{num}.png')
+        src.screenshot(path=f'{os.getcwd()}/Interface/assets/ultGrabTest/{num}.png')
         ults = src.grabAllyUlts(debug=False)
         sp = src.grabSp()
         enemyHp = src.grabEnemyHp(debug=False)
@@ -313,27 +313,24 @@ if __name__ == '__main__':
         print(f"ActionOrder : {actionOrder}")
 
     def testGrabHp(num = 1):
-        src.screenshot(path=f'{os.getcwd()}/DataGrabber/assets/ultGrabTest/{num}.png')
-        hp = src.grabEnemyHp(debug=False)
+        src.screenshot(path=f'{os.getcwd()}/Interface/assets/ultGrabTest/{num}.png')
+        hp = src.grabEnemyHp(debug=True)
         print(hp)
 
     def testGrabEnemyWeakness(num = 1):
-        src.screenshot(path=f'{os.getcwd()}/DataGrabber/assets/ultGrabTest/{num}.png')
+        src.screenshot(path=f'{os.getcwd()}/Interface/assets/ultGrabTest/{num}.png')
         enemyWeakness = src.grabEnemyWeakness(debug=False)
         print(enemyWeakness)
     
     def testGrabActionOrder(num = 1):
-        src.screenshot(path=f'{os.getcwd()}/DataGrabber/assets/ultGrabTest/{num}.png')
+        src.screenshot(path=f'{os.getcwd()}/Interface/assets/ultGrabTest/{num}.png')
         actionOrder = src.grabActionOrder(debug=False)
         print(actionOrder)
 
     def testGrabElites(num = 1):
-        src.screenshot(path=f'{os.getcwd()}/DataGrabber/assets/ultGrabTest/{num}.png')
+        src.screenshot(path=f'{os.getcwd()}/Interface/assets/ultGrabTest/{num}.png')
         elites = src.grabElites(debug=False)
         print(elites)
 
-    testGrab(1)
-    for i in range(1, 7):
-        #testGrab(num = i)
-        #testGrabElites(i)
-        pass
+if(__name__ == "__main__"):
+    testGrabHp(8)
