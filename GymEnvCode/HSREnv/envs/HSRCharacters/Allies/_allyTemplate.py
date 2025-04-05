@@ -2,7 +2,7 @@ import random
 from datetime import datetime
 
 class AllyTemplate():
-    def __init__(self, hp   = 100, atk= 100, defence= 100, spd= 100, critRate= 0.1, critDamage= 1.5, lv= 80):
+    def __init__(self, hp= 100, atk= 100, defence= 100, spd= 100, critRate= 0.1, critDamage= 1.5, lv= 80):
         self.buffs = {}
         self.lv = lv
         self.hp = hp

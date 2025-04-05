@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from HSREnv.envs.HSRCharacters.Allies._allyTemplate import AllyTemplate
+from GymEnvCode.HSREnv.envs.HSRCharacters.Allies._allyTemplate import AllyTemplate
 
 class Adventurine(AllyTemplate):
     def __init__(self, hp= 3098, atk= 1441, defence= 3976, spd= 113, critRate= 0.435, critDamage= 1.895, energyRegenRate= 1):

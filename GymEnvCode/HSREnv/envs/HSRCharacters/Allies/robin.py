@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from HSREnv.envs.HSRCharacters.Allies._allyTemplate import AllyTemplate
+from GymEnvCode.HSREnv.envs.HSRCharacters.Allies._allyTemplate import AllyTemplate
 
 class Robin(AllyTemplate):
     def __init__(self, hp= 4313, atk= 3864, defence= 986, spd= 115, critRate= 0.079, critDamage= 1.733, energyRegenRate= 1.19):

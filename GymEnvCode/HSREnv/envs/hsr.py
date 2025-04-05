@@ -1,5 +1,5 @@
-from HSREnv.envs.HSRCharacters.Allies import *
-from HSREnv.envs.HSRCharacters.Enemies import *
+from GymEnvCode.HSREnv.envs.HSRCharacters.Allies import *
+from GymEnvCode.HSREnv.envs.HSRCharacters.Enemies import *
 import numpy as np
 import random
 import pygame

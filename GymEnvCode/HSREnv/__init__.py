@@ -1,5 +1,5 @@
 from gymnasium.envs.registration import register
-from HSREnv import envs
+from GymEnvCode.HSREnv import envs
  
 register(
     id='HSREnv-v2',

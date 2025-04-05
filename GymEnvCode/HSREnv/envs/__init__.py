@@ -1,2 +1,2 @@
-from HSREnv.envs.environment import Environment
-from HSREnv.envs.hsr import HSR
+from GymEnvCode.HSREnv.envs.environment import Environment
+from GymEnvCode.HSREnv.envs.hsr import HSR

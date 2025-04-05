@@ -1,7 +1,7 @@
 import gymnasium
 from gymnasium import spaces
 import numpy as np
-from HSREnv.envs.hsr import HSR
+from GymEnvCode.HSREnv.envs.hsr import HSR
 from typing import Optional
 class Environment(gymnasium.Env):
     metadata = {"render_modes": ["human", "robot", "rgb_array"], 'render_fps': 10}
@@ -18,15 +18,17 @@ class Environment(gymnasium.Env):
                                               "EnemyWeakness" : spaces.MultiBinary([5, 7]),
                                               "Elites" : spaces.MultiBinary(5),
                                               "ActionOrder" : spaces.MultiDiscrete([6, 6]),
-                                              "SkillPoints" : spaces.Discrete(7)})
+                                              "SkillPoints" : spaces.Discrete(8)})
 
     def reset(self, seed = None, options = []):
         del self.game
         self.game = HSR(render_mode=self.kwargs[0], seed=self.kwargs[1], charNames=self.kwargs[2], enemyData=self.kwargs[3])
         obs = self.getObs()
+        #print(obs)
         for i in obs:
-            if(type(obs[i]) == int):
-                pass
+            #print(i, obs[i])
+            if(i == "SkillPoints"):
+                obs[i] = int(obs[i])
             elif(i == "EnemyHp" or i == "ActionOrder"):
                 obs[i] = np.array(obs[i])
             else:
@@ -44,12 +46,15 @@ class Environment(gymnasium.Env):
         obs = self.getObs()
         for i in range(4):
             mask[0][i] = obs["AllyUlts"][i]
+        for i in range(5):
+            mask[1][i] = obs["EnemyHp"][i] != 0
+
+        mask[0][5] = obs["SkillPoints"] > 0
+
         flattenMask = []
         for i in mask:
             for j in i:
                 flattenMask.append(j)
-
-        mask[5] = obs["SkillPoints"] > 0
 
         return flattenMask
 
@@ -64,8 +69,12 @@ class Environment(gymnasium.Env):
         reward = self.game.evaluate()
         termination = self.game.is_done()
         truncation = self.game.is_trunc()
+        #print(obs)
         for i in obs:
-            if(i == "EnemyHp" or i == "ActionOrder"):
+            #print(i, obs[i], type(obs[i]))
+            if(i == "SkillPoints"):
+                obs[i] = int(obs[i])
+            elif(i == "EnemyHp" or i == "ActionOrder"):
                 obs[i] = np.array(obs[i])
             else:
                 obs[i] = np.array(obs[i], dtype = bool)

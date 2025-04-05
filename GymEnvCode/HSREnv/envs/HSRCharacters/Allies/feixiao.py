@@ -1,6 +1,6 @@
 import random
 from datetime import datetime
-from HSREnv.envs.HSRCharacters.Allies._allyTemplate import AllyTemplate
+from GymEnvCode.HSREnv.envs.HSRCharacters.Allies._allyTemplate import AllyTemplate
 
 class Feixiao(AllyTemplate):
     def __init__(self, hp= 3311, atk= 2603, defence= 1331, spd= 142, critRate= 82.7, critDamage= 2.40, energyRegenRate= 1):

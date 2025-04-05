@@ -1,2 +1,2 @@
-import HSREnv.envs.HSRCharacters.Allies
-import HSREnv.envs.HSRCharacters.Enemies
+import GymEnvCode.HSREnv.envs.HSRCharacters.Allies
+import GymEnvCode.HSREnv.envs.HSRCharacters.Enemies

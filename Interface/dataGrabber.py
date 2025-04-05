@@ -78,7 +78,7 @@ class Interface():
                 return False
         return True
 
-    def mse(self, imageA, imageB, xywhA = None, xywhB = None, debug = False):
+    def mse(self, imageA, imageB, xywhA = None, xywhB = None, debug = True):
         if(xywhA != None):
             imageA = imageA[xywhA[1]:xywhA[1]+xywhA[3],xywhA[0]:xywhA[0]+xywhA[2]]
         if(xywhB != None):
@@ -90,7 +90,7 @@ class Interface():
         err /= float(imageA.shape[0] * imageA.shape[1])
     
         #self.showImage(imageA, "A") if debug else None
-        #self.showImage(imageB, "B") if debug else None
+        ##self.showImage(imageB, "B") if debug else None
         return err
 
     def screenshot(self, path = None):
@@ -125,6 +125,7 @@ class Interface():
 
     def grabAllyUlts(self, debug = False):
         img = self.screen.copy()
+
         for i, char in enumerate(self.chars):
             #print(char)
             mseFull = 10000000
@@ -163,7 +164,7 @@ class Interface():
         img2 = img.copy()
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = cv2.inRange(img, (200, 74, 50), (201, 75, 51))
-        img = img[self.scrY*150//1080: self.scrY*(150+400)//1080, :]
+        img = img[self.scrY*100//1080: self.scrY*(100+450)//1080, :]
         self.showImage(img) if debug else None
 
         contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -210,8 +211,8 @@ class Interface():
             if(4 <= i[3] and i[3] <= 7):
                 ans.append(i[2])
             print(i) if debug else None
-        print("---------------") if debug else None
-
+        print("--------------- ans") if debug else None
+        print(ans if debug else None, "-----------------")
         self.enemyHp = ans
         self.hpRects = hpRects
         return ans
@@ -233,14 +234,17 @@ class Interface():
         #self.showImage(screen)
         x = -1000
         i = -1
-        enemyWeakness = [[0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0], [0,0,0,0,0,0,0]]
+        enemyWeakness = []
         for data in weakPos:
             i += (1 if (data[0] > x + 100) else 0)
+            if(i == len(enemyWeakness)):
+                enemyWeakness.append([0,0,0,0,0,0,0])
             x = data[0]
             enemyWeakness[i][self.weaknesses.index(data[2])] = 1
 
         self.enemyWeakness = enemyWeakness
         self.weakPos = weakPos
+        print("Enemy weakness : ", enemyWeakness, "\n") if debug else None
         return enemyWeakness
 
     def grabElites(self, debug = False):
@@ -285,9 +289,54 @@ class Interface():
         
         return actionOrder
     
+def initSrc(char):
+    global src
+    src = Interface(chars=char)
+
+def getObs(num = 1, debug = False, test = False):
+        src.screenshot(path=f'{os.getcwd()}/Interface/assets/ultGrabTest/{num}.png') if test else src.screenshot()
+        ults = src.grabAllyUlts(debug=False)
+        sp = src.grabSp()
+        enemyHp = src.grabEnemyHp(debug=False)
+        weak = src.grabEnemyWeakness(debug=False)
+        elitePos = src.grabElites(debug=False)
+        actionOrder = src.grabActionOrder(debug=False)
+        if(debug):
+            print(ults, f"sp: {sp}")
+            print(f"EnemyHp : {enemyHp}")
+            for i in range(5):
+                print(f"enemy{i} weak to [", end="")
+                for j in range(7):
+                    if(weak[i][j] == 1):
+                        print(src.weaknesses[j], end=(", " if j!=6 else ""))
+                print("]")
+            print(f"ElitePos : {elitePos}")
+            print(f"ActionOrder : {actionOrder}")
+
+        obs = {
+            "AllyUlts" : ults,
+            "EnemyHp" : enemyHp,
+            "EnemyWeakness" : weak,
+            "Elites" : elitePos,
+            "ActionOrder" : actionOrder,
+            "SkillPoints" : sp
+        }
+        print(obs)
+
+        while(len(obs["EnemyHp"]) < 5):
+            obs["EnemyHp"].append(0)
+        while(len(obs["EnemyWeakness"]) < 5):
+            obs["EnemyWeakness"].append([0,0,0,0,0,0,0])  
+        while(len(obs["Elites"]) < 5):
+            obs["Elites"].append(0)
+
+        obs["ActionOrder"][0] = 4 if obs["ActionOrder"][0] == "Enemy" else src.chars.index(obs["ActionOrder"][0])
+        obs["ActionOrder"][1] = 4 if obs["ActionOrder"][1] == "Enemy" else src.chars.index(obs["ActionOrder"][1])
+        print(obs)
+        return obs
+
 if __name__ == '__main__':
     src = Interface()
-
     def testUltGrab(num = 1):
         src.screenshot(path=f'{os.getcwd()}/Interface/assets/ultGrabTest/{num}.png')
         src.grabAllyUlts(debug=True)
@@ -332,5 +381,4 @@ if __name__ == '__main__':
         elites = src.grabElites(debug=False)
         print(elites)
 
-if(__name__ == "__main__"):
-    testGrabHp(8)
+    testUltGrab(10)
