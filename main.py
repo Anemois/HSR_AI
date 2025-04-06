@@ -47,7 +47,7 @@ if __name__ == "__main__":
     controller = mc.MouseController()
         
     model = MaskablePPO.load(path="HSREnv-v2")
-    dg.initSrc(["Feixiao", "Robin", "Adventurine", "March7"])dd
+    dg.initSrc(["Feixiao", "Robin", "Adventurine", "March7"])
         
     while True:
         if keyboard.is_pressed('y'):
