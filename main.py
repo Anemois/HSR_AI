@@ -5,10 +5,11 @@ import gymnasium as gym
 import GymEnvCode.HSREnv
 import time
 import pygame
+import keyboard
 from GymEnvCode.HSREnv.envs.hsr import HSR
 from GymEnvCode.HSREnv.envs.environment import Environment
 import pyautogui as pg
-
+import threading
 import Interface.dataGrabber as dg
 import Interface.mouseController as mc
 
@@ -18,6 +19,8 @@ from sb3_contrib.common.maskable.policies import MaskableMultiInputActorCriticPo
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.evaluation import evaluate_policy
 from sb3_contrib.common.maskable.utils import get_action_masks
+
+START = False
 
 def mask_fn(obs):
         mask = [[0,0,0,0,1,0],[1,1,1,1,1]]
@@ -41,23 +44,26 @@ def actionInterpreter(act):
         return {"action" : action[act[0]], "target" : target[act[1]]}
 
 if __name__ == "__main__":
-    time.sleep(1)
     controller = mc.MouseController()
         
     model = MaskablePPO.load(path="HSREnv-v2")
-    dg.initSrc(["Feixiao", "Robin", "Adventurine", "March7"])
-    
+    dg.initSrc(["Feixiao", "Robin", "Adventurine", "March7"])dd
+        
     while True:
-        try:
-            obs = dg.getObs(4, debug=False, test = False)
-        except TypeError:
+        if keyboard.is_pressed('y'):
+            START = not START
+            print("SWITCHED TO ", START)
             time.sleep(1)
-            continue
-        action, _states = model.predict(obs, action_masks=mask_fn(obs))
-        ac = actionInterpreter(action)
-        print(ac)
-        controller.changeTarget(ac["target"])
-        controller.click(ac["action"])
-        #aaaaaaaadaaaa       ddddddcontroller.click(ac["action"])
-        time.sleep(1)
-    
+        if(START):
+            try:
+                obs = dg.getObs(4, debug=False, test = False)
+                action, _states = model.predict(obs, action_masks=mask_fn(obs))
+                ac = actionInterpreter(action)
+                print(ac)
+                controller.changeTarget(ac["target"])
+                controller.click(ac["action"])
+            except TypeError:
+                time.sleep(0.5)
+                continue
+            
+            #aaaaaaaadaaaa       ddddddcontroller.click(ac["action"])

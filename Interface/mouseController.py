@@ -45,7 +45,7 @@ class MouseController():
             pg.click(x=self.ultPos[i][0], y=self.ultPos[i][1])
             pg.press(' ')
             time.sleep(1.5)
-            for i in range(10):
+            for i in range(20):
                 pg.press(' ')
                 time.sleep(0.2)
             
